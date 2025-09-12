@@ -1,0 +1,9 @@
+{
+  "avg_response_length": 2791,
+  "avg_retrieval_time": 0.36446015040079754,
+  "avg_generation_time": 206.9567894935608,
+  "avg_total_time": 207.32722322146097,
+  "context_utilization": 5.0,
+  "response_completeness": 1.0,
+  "query_coverage": 0.6090909090909091
+}

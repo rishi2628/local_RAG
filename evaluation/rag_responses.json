@@ -1,0 +1,239 @@
+[
+  {
+    "query": "What is the attention mechanism and how does it work?",
+    "answer": "The attention mechanism in the Transformer model works by allowing each position in the input sequence to attend over all positions in the input sequence. This is done through multi-head attention, which computes a weighted sum of value vectors based on similarity scores between queries and keys. The attention mechanism allows the model to focus on different parts of the input sequence depending on the task at hand. In the encoder, self-attention layers allow each position in the encoder to attend to all positions in the previous layer. In the decoder, multi-head attention is used in three different ways: encoder-decoder attention, self-attention, and multi-head attention over the output of the encoder stack. The attention mechanism helps the model to learn long-range dependencies between words in a sequence, making it well-suited for tasks such as machine translation and text summarization.",
+    "retrieved_contexts": [
+      {
+        "rank": 1,
+        "score": 0.8819997906684875,
+        "similarity": 0.5313496871563409,
+        "content": "is similar to that of single-head attention with full dimensionality.\n3.2.3 Applications of Attention in our Model\nThe Transformer uses multi-head attention in three different ways:\n•In \"encoder-decoder attention\" layers, the queries come from the previous decoder layer,\nand the memory keys and values come from the output of the encoder. This allows every\nposition in the decoder to attend over all positions in the input sequence. This mimics the\ntypical encoder-decoder attention mechanisms in sequence-to-sequence models such as\n[38, 2, 9].\n•The encoder contains self-attention layers. In a self-attention layer all of the keys, values\nand queries come from the same place, in this case, the output of the previous layer in the\nencoder. Each position in the encoder can attend to all positions in the previous layer of the\nencoder.\n•Similarly, self-attention layers in the decoder allow each position in the decoder to attend to",
+        "metadata": {
+          "source": "attention_is_all_you_need",
+          "description": "Attention Is All You Need - Transformer Paper",
+          "chunk_id": 15,
+          "total_chunks": 49,
+          "file_type": "pdf"
+        }
+      },
+      {
+        "rank": 2,
+        "score": 1.0505468845367432,
+        "similarity": 0.4876747796117418,
+        "content": "Decoder: The decoder is also composed of a stack of N= 6identical layers. In addition to the two\nsub-layers in each encoder layer, the decoder inserts a third sub-layer, which performs multi-head\nattention over the output of the encoder stack. Similar to the encoder, we employ residual connections\naround each of the sub-layers, followed by layer normalization. We also modify the self-attention\nsub-layer in the decoder stack to prevent positions from attending to subsequent positions. This\nmasking, combined with fact that the output embeddings are offset by one position, ensures that the\npredictions for position ican depend only on the known outputs at positions less than i.\n3.2 Attention\nAn attention function can be described as mapping a query and a set of key-value pairs to an output,\nwhere the query, keys, values, and output are all vectors. The output is computed as a weighted sum\n3\nScaled Dot-Product Attention\n Multi-Head Attention",
+        "metadata": {
+          "source": "attention_is_all_you_need",
+          "description": "Attention Is All You Need - Transformer Paper",
+          "chunk_id": 10,
+          "total_chunks": 49,
+          "file_type": "pdf"
+        }
+      },
+      {
+        "rank": 3,
+        "score": 1.0660494565963745,
+        "similarity": 0.48401551899314527,
+        "content": "Full attentions for head 5. Bottom: Isolated attentions from just the word ‘its’ for attention heads 5\nand 6. Note that the attentions are very sharp for this word.\n14\nInput-Input Layer5\nThe\nLaw\nwill\nnever\nbe\nperfect\n,\nbut\nits\napplication\nshould\nbe\njust\n-\nthis\nis\nwhat\nwe\nare\nmissing\n,\nin\nmy\nopinion\n.\n<EOS>\n<pad>\nThe\nLaw\nwill\nnever\nbe\nperfect\n,\nbut\nits\napplication\nshould\nbe\njust\n-\nthis\nis\nwhat\nwe\nare\nmissing\n,\nin\nmy\nopinion\n.\n<EOS>\n<pad>\nInput-Input Layer5\nThe\nLaw\nwill\nnever\nbe\nperfect\n,\nbut\nits\napplication\nshould\nbe\njust\n-\nthis\nis\nwhat\nwe\nare\nmissing\n,\nin\nmy\nopinion\n.\n<EOS>\n<pad>\nThe\nLaw\nwill\nnever\nbe\nperfect\n,\nbut\nits\napplication\nshould\nbe\njust\n-\nthis\nis\nwhat\nwe\nare\nmissing\n,\nin\nmy\nopinion\n.\n<EOS>\n<pad>Figure 5: Many of the attention heads exhibit behaviour that seems related to the structure of the\nsentence. We give two such examples above, from two different heads from the encoder self-attention\nat layer 5 of 6. The heads clearly learned to perform different tasks.\n15",
+        "metadata": {
+          "source": "attention_is_all_you_need",
+          "description": "Attention Is All You Need - Transformer Paper",
+          "chunk_id": 48,
+          "total_chunks": 49,
+          "file_type": "pdf"
+        }
+      },
+      {
+        "rank": 4,
+        "score": 1.07965087890625,
+        "similarity": 0.48084993983506,
+        "content": "PEpos.\nWe also experimented with using learned positional embeddings [ 9] instead, and found that the two\nversions produced nearly identical results (see Table 3 row (E)). We chose the sinusoidal version\nbecause it may allow the model to extrapolate to sequence lengths longer than the ones encountered\nduring training.\n4 Why Self-Attention\nIn this section we compare various aspects of self-attention layers to the recurrent and convolu-\ntional layers commonly used for mapping one variable-length sequence of symbol representations\n(x1, ..., x n)to another sequence of equal length (z1, ..., z n), with xi, zi∈Rd, such as a hidden\nlayer in a typical sequence transduction encoder or decoder. Motivating our use of self-attention we\nconsider three desiderata.\nOne is the total computational complexity per layer. Another is the amount of computation that can\nbe parallelized, as measured by the minimum number of sequential operations required.",
+        "metadata": {
+          "source": "attention_is_all_you_need",
+          "description": "Attention Is All You Need - Transformer Paper",
+          "chunk_id": 20,
+          "total_chunks": 49,
+          "file_type": "pdf"
+        }
+      },
+      {
+        "rank": 5,
+        "score": 1.0891263484954834,
+        "similarity": 0.4786689903749313,
+        "content": "positions. Doing so requires a stack of O(n/k)convolutional layers in the case of contiguous kernels,\norO(logk(n))in the case of dilated convolutions [ 18], increasing the length of the longest paths\nbetween any two positions in the network. Convolutional layers are generally more expensive than\nrecurrent layers, by a factor of k. Separable convolutions [ 6], however, decrease the complexity\nconsiderably, to O(k·n·d+n·d2). Even with k=n, however, the complexity of a separable\nconvolution is equal to the combination of a self-attention layer and a point-wise feed-forward layer,\nthe approach we take in our model.\nAs side benefit, self-attention could yield more interpretable models. We inspect attention distributions\nfrom our models and present and discuss examples in the appendix. Not only do individual attention\nheads clearly learn to perform different tasks, many appear to exhibit behavior related to the syntactic\nand semantic structure of the sentences.\n5 Training",
+        "metadata": {
+          "source": "attention_is_all_you_need",
+          "description": "Attention Is All You Need - Transformer Paper",
+          "chunk_id": 23,
+          "total_chunks": 49,
+          "file_type": "pdf"
+        }
+      }
+    ],
+    "generation_time": 249.83367681503296,
+    "retrieval_time": 0.3999478816986084,
+    "total_time": 250.24212884902954,
+    "metadata": {
+      "num_retrieved_docs": 5,
+      "context_length": 1992,
+      "timestamp": "2025-09-12T16:46:59.776709"
+    }
+  },
+  {
+    "query": "How does BERT differ from traditional language models?",
+    "answer": "Based on the provided context document, it seems that BERT differs from traditional language models in its unified architecture across different tasks. Unlike traditional language models that require separate models for each task, BERT has a multi-layer bidirectional Transformer encoder based on Vaswani et al.'s (2017) implementation and released in thetensor2tensor library. This allows for minimal differences between the pre-trained architecture and the final downstream architecture, resulting in a more efficient and unified approach to language modeling.",
+    "retrieved_contexts": [
+      {
+        "rank": 1,
+        "score": 0.8039175271987915,
+        "similarity": 0.5543490680268778,
+        "content": "tuning, the BERT model is ﬁrst initialized with\nthe pre-trained parameters, and all of the param-\neters are ﬁne-tuned using labeled data from the\ndownstream tasks. Each downstream task has sep-\narate ﬁne-tuned models, even though they are ini-\ntialized with the same pre-trained parameters. The\nquestion-answering example in Figure 1 will serve\nas a running example for this section.\nA distinctive feature of BERT is its uniﬁed ar-\nchitecture across different tasks. There is mini-mal difference between the pre-trained architec-\nture and the ﬁnal downstream architecture.\nModel Architecture BERT’s model architec-\nture is a multi-layer bidirectional Transformer en-\ncoder based on the original implementation de-\nscribed in Vaswani et al. (2017) and released in\nthetensor2tensor library.1Because the use\nof Transformers has become common and our im-\nplementation is almost identical to the original,\nwe will omit an exhaustive background descrip-\ntion of the model architecture and refer readers to",
+        "metadata": {
+          "source": "bert_paper",
+          "description": "BERT: Pre-training of Deep Bidirectional Transformers",
+          "chunk_id": 13,
+          "total_chunks": 81,
+          "file_type": "pdf"
+        }
+      },
+      {
+        "rank": 2,
+        "score": 0.8422775268554688,
+        "similarity": 0.5428063825469726,
+        "content": "2018; Radford et al., 2018; Dai and Le, 2015).\n2.3 Transfer Learning from Supervised Data\nThere has also been work showing effective trans-\nfer from supervised tasks with large datasets, such\nas natural language inference (Conneau et al.,\n2017) and machine translation (McCann et al.,\n2017). Computer vision research has also demon-\nstrated the importance of transfer learning from\nlarge pre-trained models, where an effective recipe\nis to ﬁne-tune models pre-trained with Ima-\ngeNet (Deng et al., 2009; Yosinski et al., 2014).\n3 BERT\nWe introduce BERT and its detailed implementa-\ntion in this section. There are two steps in our\nframework: pre-training and ﬁne-tuning . Dur-\ning pre-training, the model is trained on unlabeled\ndata over different pre-training tasks. For ﬁne-\ntuning, the BERT model is ﬁrst initialized with\nthe pre-trained parameters, and all of the param-\neters are ﬁne-tuned using labeled data from the\ndownstream tasks. Each downstream task has sep-",
+        "metadata": {
+          "source": "bert_paper",
+          "description": "BERT: Pre-training of Deep Bidirectional Transformers",
+          "chunk_id": 12,
+          "total_chunks": 81,
+          "file_type": "pdf"
+        }
+      },
+      {
+        "rank": 3,
+        "score": 0.8461783528327942,
+        "similarity": 0.5416594764344356,
+        "content": "...\n......\n...\n E1 E2 EN... T1 T2TN...\n E1 E2 EN ... T1 T2 TN...\n E1 E2 EN...Figure 3: Differences in pre-training model architectures. BERT uses a bidirectional Transformer. OpenAI GPT\nuses a left-to-right Transformer. ELMo uses the concatenation of independently trained left-to-right and right-to-\nleft LSTMs to generate features for downstream tasks. Among the three, only BERT representations are jointly\nconditioned on both left and right context in all layers. In addition to the architecture differences, BERT and\nOpenAI GPT are ﬁne-tuning approaches, while ELMo is a feature-based approach.\nto converge. In Section C.1 we demonstrate that\nMLM does converge marginally slower than a left-\nto-right model (which predicts every token), but\nthe empirical improvements of the MLM model\nfar outweigh the increased training cost.\nNext Sentence Prediction The next sentence\nprediction task can be illustrated in the following\nexamples.\nInput =[CLS] the man went to [MASK] store [SEP]",
+        "metadata": {
+          "source": "bert_paper",
+          "description": "BERT: Pre-training of Deep Bidirectional Transformers",
+          "chunk_id": 64,
+          "total_chunks": 81,
+          "file_type": "pdf"
+        }
+      },
+      {
+        "rank": 4,
+        "score": 0.8719891309738159,
+        "similarity": 0.5341911357571805,
+        "content": "A.4 Comparison of BERT, ELMo ,and\nOpenAI GPT\nHere we studies the differences in recent popular\nrepresentation learning models including ELMo,\nOpenAI GPT and BERT. The comparisons be-\ntween the model architectures are shown visually\nin Figure 3. Note that in addition to the architec-\nture differences, BERT and OpenAI GPT are ﬁne-\ntuning approaches, while ELMo is a feature-based\napproach.\nThe most comparable existing pre-training\nmethod to BERT is OpenAI GPT, which trains a\nleft-to-right Transformer LM on a large text cor-\npus. In fact, many of the design decisions in BERT\nwere intentionally made to make it as close to\nGPT as possible so that the two methods could be\nminimally compared. The core argument of this\nwork is that the bi-directionality and the two pre-\ntraining tasks presented in Section 3.1 account for\nthe majority of the empirical improvements, but\nwe do note that there are several other differences\nbetween how BERT and GPT were trained:",
+        "metadata": {
+          "source": "bert_paper",
+          "description": "BERT: Pre-training of Deep Bidirectional Transformers",
+          "chunk_id": 69,
+          "total_chunks": 81,
+          "file_type": "pdf"
+        }
+      },
+      {
+        "rank": 5,
+        "score": 0.9022670984268188,
+        "similarity": 0.5256885328180271,
+        "content": "constructed by summing the corresponding token,\nsegment, and position embeddings. A visualiza-\ntion of this construction can be seen in Figure 2.\n3.1 Pre-training BERT\nUnlike Peters et al. (2018a) and Radford et al.\n(2018), we do not use traditional left-to-right or\nright-to-left language models to pre-train BERT.\nInstead, we pre-train BERT using two unsuper-\nvised tasks, described in this section. This step\nis presented in the left part of Figure 1.\nTask #1: Masked LM Intuitively, it is reason-\nable to believe that a deep bidirectional model is\nstrictly more powerful than either a left-to-right\nmodel or the shallow concatenation of a left-to-\nright and a right-to-left model. Unfortunately,\nstandard conditional language models can only be\ntrained left-to-right orright-to-left, since bidirec-\ntional conditioning would allow each word to in-\ndirectly “see itself”, and the model could trivially\npredict the target word in a multi-layered context.",
+        "metadata": {
+          "source": "bert_paper",
+          "description": "BERT: Pre-training of Deep Bidirectional Transformers",
+          "chunk_id": 17,
+          "total_chunks": 81,
+          "file_type": "pdf"
+        }
+      }
+    ],
+    "generation_time": 154.07929825782776,
+    "retrieval_time": 0.6429944038391113,
+    "total_time": 154.73170924186707,
+    "metadata": {
+      "num_retrieved_docs": 5,
+      "context_length": 1038,
+      "timestamp": "2025-09-12T16:49:34.508418"
+    }
+  },
+  {
+    "query": "What are residual connections and why are they important in deep networks?",
+    "answer": "Residual connections are a type of connection in neural networks that allow the output of one layer to be passed directly to an input of another layer, without any further processing. This is done by adding a shortcut path between the two layers, which essentially bypasses some of the intermediate layers.\n\nResidual connections are important in deep networks because they help to prevent the vanishing gradient problem, which occurs when gradients become too small during backpropagation and can no longer be effectively used to update the network's weights. By allowing the output of one layer to be passed directly to an input of another layer, residual connections ensure that the gradients remain large enough to allow for efficient optimization of the network.\n\nResidual connections also help to improve the accuracy of deep networks by allowing them to learn more complex features and patterns from the input data. This is because the shortcut paths in the residual connections effectively allow the network to learn from both the shallow and deep layers, rather than just relying on one or the other.\n\nOverall, residual connections are an important tool for training deeper and more complex neural networks, as they help to prevent the vanishing gradient problem and improve the accuracy of the network's predictions.",
+    "retrieved_contexts": [
+      {
+        "rank": 1,
+        "score": 0.8703560829162598,
+        "similarity": 0.5346575495083267,
+        "content": "Deep Residual Learning for Image Recognition\nKaiming He Xiangyu Zhang Shaoqing Ren Jian Sun\nMicrosoft Research\nfkahe, v-xiangz, v-shren, jiansun g@microsoft.com\nAbstract\nDeeper neural networks are more difﬁcult to train. We\npresent a residual learning framework to ease the training\nof networks that are substantially deeper than those used\npreviously. We explicitly reformulate the layers as learn-\ning residual functions with reference to the layer inputs, in-\nstead of learning unreferenced functions. We provide com-\nprehensive empirical evidence showing that these residual\nnetworks are easier to optimize, and can gain accuracy from\nconsiderably increased depth. On the ImageNet dataset we\nevaluate residual nets with a depth of up to 152 layers—8 \u0002\ndeeper than VGG nets [41] but still having lower complex-\nity. An ensemble of these residual nets achieves 3.57% error\non the ImageNet testset. This result won the 1st place on the\nILSVRC 2015 classiﬁcation task. We also present analysis",
+        "metadata": {
+          "source": "resnet_paper",
+          "description": "Deep Residual Learning for Image Recognition",
+          "chunk_id": 0,
+          "total_chunks": 74,
+          "file_type": "pdf"
+        }
+      },
+      {
+        "rank": 2,
+        "score": 0.9478890895843506,
+        "similarity": 0.5133762519371082,
+        "content": "layer residual nets ( ResNets ). The baseline architectures\nare the same as the above plain nets, expect that a shortcut\nconnection is added to each pair of 3 \u00023 ﬁlters as in Fig. 3\n(right). In the ﬁrst comparison (Table 2 and Fig. 4 right),\nwe use identity mapping for all shortcuts and zero-padding\nfor increasing dimensions (option A). So they have no extra\nparameter compared to the plain counterparts.\nWe have three major observations from Table 2 and\nFig. 4. First, the situation is reversed with residual learn-\ning – the 34-layer ResNet is better than the 18-layer ResNet\n(by 2.8%). More importantly, the 34-layer ResNet exhibits\nconsiderably lower training error and is generalizable to the\nvalidation data. This indicates that the degradation problem\nis well addressed in this setting and we manage to obtain\naccuracy gains from increased depth.\nSecond, compared to its plain counterpart, the 34-layer\n3We have experimented with more training iterations (3 \u0002) and still ob-",
+        "metadata": {
+          "source": "resnet_paper",
+          "description": "Deep Residual Learning for Image Recognition",
+          "chunk_id": 28,
+          "total_chunks": 74,
+          "file_type": "pdf"
+        }
+      },
+      {
+        "rank": 3,
+        "score": 0.9676780700683594,
+        "similarity": 0.508213215978597,
+        "content": "34-layer one.\nWe argue that this optimization difﬁculty is unlikely to\nbe caused by vanishing gradients. These plain networks are\ntrained with BN [16], which ensures forward propagated\nsignals to have non-zero variances. We also verify that the\nbackward propagated gradients exhibit healthy norms with\nBN. So neither forward nor backward signals vanish. In\nfact, the 34-layer plain net is still able to achieve compet-\nitive accuracy (Table 3), suggesting that the solver works\nto some extent. We conjecture that the deep plain nets may\nhave exponentially low convergence rates, which impact thereducing of the training error3. The reason for such opti-\nmization difﬁculties will be studied in the future.\nResidual Networks. Next we evaluate 18-layer and 34-\nlayer residual nets ( ResNets ). The baseline architectures\nare the same as the above plain nets, expect that a shortcut\nconnection is added to each pair of 3 \u00023 ﬁlters as in Fig. 3",
+        "metadata": {
+          "source": "resnet_paper",
+          "description": "Deep Residual Learning for Image Recognition",
+          "chunk_id": 27,
+          "total_chunks": 74,
+          "file_type": "pdf"
+        }
+      },
+      {
+        "rank": 4,
+        "score": 0.9818129539489746,
+        "similarity": 0.504588487025172,
+        "content": "sis reveals the response strength of the residual functions.\nFig. 7 shows that ResNets have generally smaller responses\nthan their plain counterparts. These results support our ba-\nsic motivation (Sec.3.1) that the residual functions might\nbe generally closer to zero than the non-residual functions.\nWe also notice that the deeper ResNet has smaller magni-\ntudes of responses, as evidenced by the comparisons among\nResNet-20, 56, and 110 in Fig. 7. When there are more\nlayers, an individual layer of ResNets tends to modify the\nsignal less.\nExploring Over 1000 layers. We explore an aggressively\ndeep model of over 1000 layers. We set n= 200 that\nleads to a 1202-layer network, which is trained as described\nabove. Our method shows no optimization difﬁculty , and\nthis103-layer network is able to achieve training error\n<0.1% (Fig. 6, right). Its test error is still fairly good\n(7.93%, Table 6).\nBut there are still open problems on such aggressively",
+        "metadata": {
+          "source": "resnet_paper",
+          "description": "Deep Residual Learning for Image Recognition",
+          "chunk_id": 43,
+          "total_chunks": 74,
+          "file_type": "pdf"
+        }
+      },
+      {
+        "rank": 5,
+        "score": 0.9946714639663696,
+        "similarity": 0.5013356926516196,
+        "content": "and all information is always passed through, with addi-\ntional residual functions to be learned. In addition, high-\n2\nway networks have not demonstrated accuracy gains with\nextremely increased depth ( e.g., over 100 layers).\n3. Deep Residual Learning\n3.1. Residual Learning\nLet us considerH(x)as an underlying mapping to be\nﬁt by a few stacked layers (not necessarily the entire net),\nwithxdenoting the inputs to the ﬁrst of these layers. If one\nhypothesizes that multiple nonlinear layers can asymptoti-\ncally approximate complicated functions2, then it is equiv-\nalent to hypothesize that they can asymptotically approxi-\nmate the residual functions, i.e.,H(x)\u0000x(assuming that\nthe input and output are of the same dimensions). So\nrather than expect stacked layers to approximate H(x), we\nexplicitly let these layers approximate a residual function\nF(x) :=H(x)\u0000x. The original function thus becomes\nF(x)+x. Although both forms should be able to asymptot-",
+        "metadata": {
+          "source": "resnet_paper",
+          "description": "Deep Residual Learning for Image Recognition",
+          "chunk_id": 12,
+          "total_chunks": 74,
+          "file_type": "pdf"
+        }
+      }
+    ],
+    "generation_time": 216.95739340782166,
+    "retrieval_time": 0.05043816566467285,
+    "total_time": 217.00783157348633,
+    "metadata": {
+      "num_retrieved_docs": 5,
+      "context_length": 1033,
+      "timestamp": "2025-09-12T16:53:11.516250"
+    }
+  }
+]

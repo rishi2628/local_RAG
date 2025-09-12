@@ -1,0 +1,45 @@
+================================================================================
+RAG PIPELINE EVALUATION REPORT
+================================================================================
+Evaluation Date: 2025-09-12 16:55:10
+Number of Queries Evaluated: 3
+
+EVALUATION METRICS:
+----------------------------------------
+Average Response Length: 2791.0 characters
+Average Retrieval Time: 0.364 seconds
+Average Generation Time: 206.957 seconds
+Average Total Time: 207.327 seconds
+Context Utilization: 5.0 docs/query
+Response Completeness: 1.00
+Query Coverage: 0.61
+
+INDIVIDUAL QUERY ANALYSIS:
+----------------------------------------
+
+Query 1: What is the attention mechanism and how does it work?
+  Retrieval Time: 0.400s
+  Generation Time: 249.834s
+  Documents Retrieved: 5
+  Response Length: 904 characters
+  Top Context Source: attention_is_all_you_need (Score: 0.8820)
+
+Query 2: How does BERT differ from traditional language models?
+  Retrieval Time: 0.643s
+  Generation Time: 154.079s
+  Documents Retrieved: 5
+  Response Length: 562 characters
+  Top Context Source: bert_paper (Score: 0.8039)
+
+Query 3: What are residual connections and why are they important in deep networks?
+  Retrieval Time: 0.050s
+  Generation Time: 216.957s
+  Documents Retrieved: 5
+  Response Length: 1325 characters
+  Top Context Source: resnet_paper (Score: 0.8704)
+
+RECOMMENDATIONS:
+----------------------------------------
+• Consider using a smaller or more optimized LLM model for faster generation
+
+================================================================================
