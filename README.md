@@ -267,13 +267,6 @@ pandas==2.0.3                   # Data manipulation
 4. **Response Generation:** Format prompt → LLM inference → Return response
 5. **Evaluation:** Collect responses → Run RAGAS metrics → Generate report
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Make your changes and test thoroughly
-4. Submit a pull request with clear description
-
 ## 📄 License
 
 This project is open source and available under the [MIT License](LICENSE).
@@ -285,13 +278,5 @@ This project is open source and available under the [MIT License](LICENSE).
 - **GPT4All** for local LLM inference
 - **ArXiv** for open access papers
 - **RAGAS** team for evaluation framework
-
-## 📞 Contact
-
-For questions or issues:
-- Create an issue in this repository
-- Contact: [Your contact information]
-
----
 
 **Built with ❤️ using only free and open-source tools**
