@@ -16,6 +16,8 @@ import asyncio
 # Suppress warnings for cleaner output
 warnings.filterwarnings("ignore")
 
+PERFORMANCE_METRICS_LABEL = "PERFORMANCE METRICS:"
+
 try:
     from ragas import evaluate
     from ragas.metrics import (
@@ -328,9 +330,7 @@ class RAGASEvaluator:
 
     def _average_and_normalize_metrics(self, metrics, total_responses):
         for key in metrics:
-            if key in ['response_completeness', 'response_coherence']:
-                metrics[key] = metrics[key] / total_responses
-            elif key != 'avg_response_length':
+            if key != 'avg_response_length':
                 metrics[key] = metrics[key] / total_responses
         metrics['response_completeness'] = min(metrics['response_completeness'], 1.0)
         metrics['response_coherence'] = min(metrics['response_coherence'], 1.0)
@@ -370,109 +370,112 @@ class RAGASEvaluator:
         # Add metrics section
         report.append("EVALUATION METRICS:")
         report.append("-" * 40)
-        
-        if 'faithfulness' in results and 'answer_relevancy' in results:
-            # RAGAS-equivalent metrics with detailed descriptions
-            report.append("RAGAS-EQUIVALENT METRICS (Local Implementation):")
-            report.append(f"• Answer Relevancy: {results.get('answer_relevancy', 'N/A'):.4f}")
-            report.append("  (Cosine similarity between answer and question - measures relevance)")
-            report.append(f"• Faithfulness: {results.get('faithfulness', 'N/A'):.4f}")
-            report.append("  (Cosine similarity between answer and context - measures grounding)")
-            report.append(f"• Context Recall: {results.get('context_recall', 'N/A'):.4f}")
-            report.append("  (Answer-context similarity - proxy for context coverage)")
-            report.append(f"• Context Precision: {results.get('context_precision', 'N/A'):.4f}")
-            report.append("  (Quality score of retrieved contexts based on relevance threshold)")
-            report.append(f"• Context Relevancy: {results.get('context_relevancy', 'N/A'):.4f}")
-            report.append("  (Cosine similarity between context and question - measures context relevance)")
-            report.append("")
-            report.append("ADDITIONAL LOCAL METRICS:")
-            report.append(f"• Response Completeness: {results.get('response_completeness', 0):.4f}")
-            report.append("  (Proportion of well-formed responses)")
-            report.append(f"• Response Coherence: {results.get('response_coherence', 0):.4f}")
-            report.append("  (Structural coherence of responses)")
-            report.append(f"• Query Coverage: {results.get('query_coverage', 0):.4f}")
-            report.append("  (Overlap between query terms and answer terms)")
-            report.append("")
-            report.append("PERFORMANCE METRICS:")
-            report.append(f"• Average Response Length: {results.get('avg_response_length', 0):.1f} characters")
-            report.append(f"• Average Retrieval Time: {results.get('avg_retrieval_time', 0):.3f} seconds")
-            report.append(f"• Average Generation Time: {results.get('avg_generation_time', 0):.3f} seconds")
-            report.append(f"• Average Total Time: {results.get('avg_total_time', 0):.3f} seconds")
-            report.append(f"• Context Utilization: {results.get('context_utilization', 0):.1f} docs/query")
-        elif 'faithfulness' in results:
-            # Original RAGAS metrics with detailed descriptions
-            report.append("RAGAS METRICS:")
-            report.append(f"• Faithfulness Score: {results.get('faithfulness', 'N/A'):.4f}")
-            report.append("  (Measures factual accuracy - how much the answer is grounded in context)")
-            report.append(f"• Answer Relevancy: {results.get('answer_relevancy', 'N/A'):.4f}")
-            report.append("  (Measures how relevant the answer is to the question)")
-            report.append(f"• Context Relevancy: {results.get('context_relevancy', 'N/A'):.4f}")
-            report.append("  (Measures how relevant retrieved contexts are to the question)")
-            report.append(f"• Context Precision: {results.get('context_precision', 'N/A'):.4f}")
-            report.append("  (Measures precision of retrieved context chunks)")
-            report.append(f"• Context Recall: {results.get('context_recall', 'N/A'):.4f}")
-            report.append("  (Measures how well retrieved context covers the ground truth)")
-            report.append("")
-            report.append("PERFORMANCE METRICS:")
-        else:
-            # Legacy fallback for older format
-            report.append("LOCAL EVALUATION METRICS:")
-            report.append(f"• Semantic Similarity (Answer-Context): {results.get('semantic_similarity_to_context', 0):.4f}")
-            report.append("  (Cosine similarity between generated answer and retrieved context)")
-            report.append(f"• Context Relevance (Query-Context): {results.get('context_relevance', 0):.4f}")
-            report.append("  (Cosine similarity between query and retrieved context)")
-            report.append(f"• Response Completeness: {results.get('response_completeness', 0):.4f}")
-            report.append("  (Proportion of well-formed responses)")
-            report.append(f"• Response Coherence: {results.get('response_coherence', 0):.4f}")
-            report.append("  (Structural coherence of responses)")
-            report.append(f"• Query Coverage: {results.get('query_coverage', 0):.4f}")
-            report.append("  (Overlap between query terms and answer terms)")
-            report.append("")
-            report.append("PERFORMANCE METRICS:")
-            report.append(f"• Average Response Length: {results.get('avg_response_length', 0):.1f} characters")
-            report.append(f"• Average Retrieval Time: {results.get('avg_retrieval_time', 0):.3f} seconds")
-            report.append(f"• Average Generation Time: {results.get('avg_generation_time', 0):.3f} seconds")
-            report.append(f"• Average Total Time: {results.get('avg_total_time', 0):.3f} seconds")
-            report.append(f"• Context Utilization: {results.get('context_utilization', 0):.1f} docs/query")
-        
+        report.extend(self._get_metrics_section(results))
         report.append("")
         
         # Add individual query analysis
         report.append("INDIVIDUAL QUERY ANALYSIS:")
         report.append("-" * 40)
-        
-        for i, response in enumerate(self.responses):
-            report.append(f"\nQuery {i+1}: {response['query']}")
-            report.append(f"  Retrieval Time: {response['retrieval_time']:.3f}s")
-            report.append(f"  Generation Time: {response['generation_time']:.3f}s")
-            report.append(f"  Documents Retrieved: {len(response['retrieved_contexts'])}")
-            report.append(f"  Response Length: {len(response['answer'])} characters")
-            
-            # Show top context source
-            if response['retrieved_contexts']:
-                top_source = response['retrieved_contexts'][0]['metadata']['source']
-                top_score = response['retrieved_contexts'][0]['score']
-                report.append(f"  Top Context Source: {top_source} (Score: {top_score:.4f})")
-        
+        report.extend(self._get_individual_query_analysis())
         report.append("")
         report.append("RECOMMENDATIONS:")
         report.append("-" * 40)
-        
-        # Add recommendations based on results
-        if 'avg_generation_time' in results:
-            if results['avg_generation_time'] > 100:
-                report.append("• Consider using a smaller or more optimized LLM model for faster generation")
-            if results['response_completeness'] < 0.8:
-                report.append("• Improve prompt engineering to generate more complete responses")
-            if results['context_utilization'] < 3:
-                report.append("• Consider increasing the number of retrieved documents (top_k)")
-            if results['query_coverage'] < 0.3:
-                report.append("• Improve response relevance by refining the prompt template")
-        
+        report.extend(self._get_recommendations(results))
         report.append("")
         report.append("=" * 80)
         
         return "\n".join(report)
+
+    def _get_metrics_section(self, results: Dict[str, Any]) -> list:
+        section = []
+        if 'faithfulness' in results and 'answer_relevancy' in results:
+            section.append("RAGAS-EQUIVALENT METRICS (Local Implementation):")
+            section.append(f"• Answer Relevancy: {results.get('answer_relevancy', 'N/A'):.4f}")
+            section.append("  (Cosine similarity between answer and question - measures relevance)")
+            section.append(f"• Faithfulness: {results.get('faithfulness', 'N/A'):.4f}")
+            section.append("  (Cosine similarity between answer and context - measures grounding)")
+            section.append(f"• Context Recall: {results.get('context_recall', 'N/A'):.4f}")
+            section.append("  (Answer-context similarity - proxy for context coverage)")
+            section.append(f"• Context Precision: {results.get('context_precision', 'N/A'):.4f}")
+            section.append("  (Quality score of retrieved contexts based on relevance threshold)")
+            section.append(f"• Context Relevancy: {results.get('context_relevancy', 'N/A'):.4f}")
+            section.append("  (Cosine similarity between context and question - measures context relevance)")
+            section.append("")
+            section.append("ADDITIONAL LOCAL METRICS:")
+            section.append(f"• Response Completeness: {results.get('response_completeness', 0):.4f}")
+            section.append("  (Proportion of well-formed responses)")
+            section.append(f"• Response Coherence: {results.get('response_coherence', 0):.4f}")
+            section.append("  (Structural coherence of responses)")
+            section.append(f"• Query Coverage: {results.get('query_coverage', 0):.4f}")
+            section.append(PERFORMANCE_METRICS_LABEL)
+            section.append(f"• Average Response Length: {results.get('avg_response_length', 0):.1f} characters")
+            section.append(f"• Average Retrieval Time: {results.get('avg_retrieval_time', 0):.3f} seconds")
+            section.append(f"• Average Generation Time: {results.get('avg_generation_time', 0):.3f} seconds")
+            section.append(f"• Average Total Time: {results.get('avg_total_time', 0):.3f} seconds")
+            section.append(f"• Context Utilization: {results.get('context_utilization', 0):.1f} docs/query")
+            section.append(f"• Average Total Time: {results.get('avg_total_time', 0):.3f} seconds")
+            section.append(f"• Context Utilization: {results.get('context_utilization', 0):.1f} docs/query")
+        elif 'faithfulness' in results:
+            section.append("RAGAS METRICS:")
+            section.append(f"• Faithfulness Score: {results.get('faithfulness', 'N/A'):.4f}")
+            section.append("  (Measures factual accuracy - how much the answer is grounded in context)")
+            section.append(f"• Answer Relevancy: {results.get('answer_relevancy', 'N/A'):.4f}")
+            section.append("  (Measures how relevant the answer is to the question)")
+            section.append(f"• Context Relevancy: {results.get('context_relevancy', 'N/A'):.4f}")
+            section.append("  (Measures how relevant retrieved contexts are to the question)")
+            section.append(f"• Context Precision: {results.get('context_precision', 'N/A'):.4f}")
+            section.append("  (Measures precision of retrieved context chunks)")
+            section.append(f"• Context Recall: {results.get('context_recall', 'N/A'):.4f}")
+            section.append(PERFORMANCE_METRICS_LABEL)
+        else:
+            section.append("LOCAL EVALUATION METRICS:")
+            section.append(f"• Semantic Similarity (Answer-Context): {results.get('semantic_similarity_to_context', 0):.4f}")
+            section.append("  (Cosine similarity between generated answer and retrieved context)")
+            section.append(f"• Context Relevance (Query-Context): {results.get('context_relevance', 0):.4f}")
+            section.append("  (Cosine similarity between query and retrieved context)")
+            section.append(f"• Response Completeness: {results.get('response_completeness', 0):.4f}")
+            section.append("  (Proportion of well-formed responses)")
+            section.append(f"• Response Coherence: {results.get('response_coherence', 0):.4f}")
+            section.append("  (Structural coherence of responses)")
+            section.append(f"• Query Coverage: {results.get('query_coverage', 0):.4f}")
+            section.append("  (Overlap between query terms and answer terms)")
+            section.append("")
+            section.append(PERFORMANCE_METRICS_LABEL)
+            section.append(f"• Average Response Length: {results.get('avg_response_length', 0):.1f} characters")
+            section.append(f"• Average Retrieval Time: {results.get('avg_retrieval_time', 0):.3f} seconds")
+            section.append(f"• Average Generation Time: {results.get('avg_generation_time', 0):.3f} seconds")
+            section.append(f"• Average Total Time: {results.get('avg_total_time', 0):.3f} seconds")
+            section.append(f"• Context Utilization: {results.get('context_utilization', 0):.1f} docs/query")
+        return section
+            section.append(f"• Context Utilization: {results.get('context_utilization', 0):.1f} docs/query")
+        return section
+
+    def _get_individual_query_analysis(self) -> list:
+        section = []
+        for i, response in enumerate(self.responses):
+            section.append(f"\nQuery {i+1}: {response['query']}")
+            section.append(f"  Retrieval Time: {response['retrieval_time']:.3f}s")
+            section.append(f"  Generation Time: {response['generation_time']:.3f}s")
+            section.append(f"  Documents Retrieved: {len(response['retrieved_contexts'])}")
+            section.append(f"  Response Length: {len(response['answer'])} characters")
+            if response['retrieved_contexts']:
+                top_source = response['retrieved_contexts'][0]['metadata']['source']
+                top_score = response['retrieved_contexts'][0]['score']
+                section.append(f"  Top Context Source: {top_source} (Score: {top_score:.4f})")
+        return section
+
+    def _get_recommendations(self, results: Dict[str, Any]) -> list:
+        section = []
+        if 'avg_generation_time' in results:
+            if results['avg_generation_time'] > 100:
+                section.append("• Consider using a smaller or more optimized LLM model for faster generation")
+            if results['response_completeness'] < 0.8:
+                section.append("• Improve prompt engineering to generate more complete responses")
+            if results['context_utilization'] < 3:
+                section.append("• Consider increasing the number of retrieved documents (top_k)")
+            if results['query_coverage'] < 0.3:
+                section.append("• Improve response relevance by refining the prompt template")
+        return section
     
     def save_evaluation_results(self, results: Dict[str, Any], report: str):
         """
