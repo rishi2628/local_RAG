@@ -39,10 +39,12 @@ This project demonstrates a fully functional RAG system that:
 
 ## 📋 Prerequisites
 
-- Python 3.8+
-- 8GB+ RAM (for LLM inference)
-- 10GB+ disk space (for models and documents)
-- Windows/Linux/macOS
+- **Python 3.8+** (recommended: Python 3.11)
+- **Git** installed
+- **4+ GB RAM** (for local LLM)
+- **5+ GB disk space** (for models and dependencies)
+
+*Note: The project uses the latest compatible versions of all dependencies. If you encounter compatibility issues, consider creating a fresh virtual environment.*
 
 ## 🚀 Quick Start
 
@@ -217,28 +219,37 @@ CHUNK_OVERLAP = 200
 
 ### Hardware Requirements
 
-- **Minimum:** 8GB RAM, 4-core CPU
-- **Recommended:** 16GB RAM, 8-core CPU
-- **Storage:** 10GB for models and documents
+- **Minimum:** 4GB RAM, 2-core CPU, 5GB disk space
+- **Recommended:** 8GB RAM, 4-core CPU, 10GB disk space
+- **Optimal:** 16GB RAM, 8-core CPU, 15GB disk space
+- **Platform:** Windows/Linux/macOS
 
 ## 🐛 Troubleshooting
 
 ### Common Issues
 
-1. **CUDA/GPU Errors:**
+1. **Package Compatibility Issues:**
    ```bash
-   # Use CPU-only versions
+   # If you encounter dependency conflicts, create a fresh environment
+   python -m venv fresh_venv
+   # Activate and install
+   pip install -r requirements.txt
+   ```
+
+2. **CUDA/GPU Errors:**
+   ```bash
+   # Use CPU-only versions if needed
    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
    ```
 
-2. **Memory Issues:**
+3. **Memory Issues:**
    ```python
    # Reduce batch size and context length
    BATCH_SIZE = 16
    MAX_CONTEXT_LENGTH = 1000
    ```
 
-3. **Slow Generation:**
+4. **Slow Generation:**
    ```python
    # Use smaller model
    LLM_MODEL = "mistral-7b-openorca.gguf2.Q4_0.gguf"
@@ -249,15 +260,24 @@ CHUNK_OVERLAP = 200
 Core dependencies and their purposes:
 
 ```
-sentence-transformers==2.7.0    # Text embeddings
-faiss-cpu==1.7.4                # Vector similarity search
-gpt4all==2.8.2                  # Local LLM inference
-langchain==0.1.17               # Document processing
-ragas==0.1.9                    # RAG evaluation metrics
-PyPDF2==3.0.1                   # PDF text extraction
-numpy==1.24.3                   # Numerical operations
-pandas==2.0.3                   # Data manipulation
+sentence-transformers              # Text embeddings and semantic similarity
+faiss-cpu                         # Vector similarity search and indexing
+gpt4all                           # Local LLM inference without API keys
+langchain                         # Document processing and LLM integration
+langchain-community               # Community integrations for langchain
+ragas                             # RAG evaluation metrics and assessment
+pypdf2                            # PDF text extraction and processing
+datasets                          # Dataset handling for evaluation
+numpy                             # Numerical operations and array handling
+pandas                            # Data manipulation and analysis
+scikit-learn                      # Machine learning utilities
+tqdm                              # Progress bars for long operations
+requests                          # HTTP requests for document downloads
+python-dotenv                     # Environment variable management
+beautifulsoup4                    # Optional: HTML parsing for text extraction
 ```
+
+*All packages will install their latest compatible versions. The system is tested to work with modern versions of these dependencies.*
 
 ## 🔄 Development Workflow
 
