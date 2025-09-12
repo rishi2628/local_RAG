@@ -71,6 +71,7 @@ pip install -r requirements.txt
 
 ```bash
 # Run individual components or the full pipeline
+python src/local_llm.py             # Download local LLM
 python src/document_ingestion.py    # Download and process documents
 python src/vector_database.py       # Build FAISS index
 python src/rag_pipeline.py          # Generate responses
