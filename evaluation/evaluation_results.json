@@ -1,9 +1,17 @@
 {
+  "answer_relevancy": 0.7152538299560547,
+  "faithfulness": 0.7617578903834025,
+  "context_recall": 0.7617578903834025,
+  "context_precision": 1.0,
+  "context_relevancy": 0.5728681882222494,
   "avg_response_length": 2791,
   "avg_retrieval_time": 0.36446015040079754,
   "avg_generation_time": 206.9567894935608,
   "avg_total_time": 207.32722322146097,
   "context_utilization": 5.0,
   "response_completeness": 1.0,
-  "query_coverage": 0.6090909090909091
+  "query_coverage": 0.6090909090909091,
+  "semantic_similarity_to_context": 0.7617578903834025,
+  "response_coherence": 1.0,
+  "context_relevance": 0.5728681882222494
 }

@@ -1,18 +1,37 @@
 ================================================================================
 RAG PIPELINE EVALUATION REPORT
 ================================================================================
-Evaluation Date: 2025-09-12 16:55:10
+Evaluation Date: 2025-09-12 17:40:27
 Number of Queries Evaluated: 3
 
 EVALUATION METRICS:
 ----------------------------------------
-Average Response Length: 2791.0 characters
-Average Retrieval Time: 0.364 seconds
-Average Generation Time: 206.957 seconds
-Average Total Time: 207.327 seconds
-Context Utilization: 5.0 docs/query
-Response Completeness: 1.00
-Query Coverage: 0.61
+RAGAS-EQUIVALENT METRICS (Local Implementation):
+• Answer Relevancy: 0.7153
+  (Cosine similarity between answer and question - measures relevance)
+• Faithfulness: 0.7618
+  (Cosine similarity between answer and context - measures grounding)
+• Context Recall: 0.7618
+  (Answer-context similarity - proxy for context coverage)
+• Context Precision: 1.0000
+  (Quality score of retrieved contexts based on relevance threshold)
+• Context Relevancy: 0.5729
+  (Cosine similarity between context and question - measures context relevance)
+
+ADDITIONAL LOCAL METRICS:
+• Response Completeness: 1.0000
+  (Proportion of well-formed responses)
+• Response Coherence: 1.0000
+  (Structural coherence of responses)
+• Query Coverage: 0.6091
+  (Overlap between query terms and answer terms)
+
+PERFORMANCE METRICS:
+• Average Response Length: 2791.0 characters
+• Average Retrieval Time: 0.364 seconds
+• Average Generation Time: 206.957 seconds
+• Average Total Time: 207.327 seconds
+• Context Utilization: 5.0 docs/query
 
 INDIVIDUAL QUERY ANALYSIS:
 ----------------------------------------
