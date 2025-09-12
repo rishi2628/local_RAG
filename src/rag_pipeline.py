@@ -371,7 +371,7 @@ def main():
             print(f"TOTAL TIME: {response.total_time:.3f}s")
             print(f"RETRIEVED DOCS: {response.metadata['num_retrieved_docs']}")
             
-            print(f"\nTOP RETRIEVED CONTEXTS:")
+            print("\nTOP RETRIEVED CONTEXTS:")
             for j, doc in enumerate(response.retrieved_contexts[:3]):
                 print(f"  {j+1}. {doc['metadata']['source']} (Score: {doc['score']:.4f})")
                 print(f"     Preview: {doc['content'][:100]}...")

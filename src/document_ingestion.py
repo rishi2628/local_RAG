@@ -248,7 +248,7 @@ def main():
     
     if success:
         # Process documents
-        chunks = ingestion.process_all_documents()
+        ingestion.process_all_documents()
         
         # Show statistics
         stats = ingestion.get_document_stats()

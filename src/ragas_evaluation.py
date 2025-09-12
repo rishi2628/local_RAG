@@ -236,130 +236,118 @@ class RAGASEvaluator:
             Dictionary with evaluation results including RAGAS-equivalent metrics
         """
         logger.info("Running comprehensive local evaluation with RAGAS-equivalent metrics...")
-        
         try:
             from sentence_transformers import SentenceTransformer
             from sklearn.metrics.pairwise import cosine_similarity
             import numpy as np
-            
-            # Load embedding model for similarity calculations
+
             embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
-            
-            # Initialize metrics including RAGAS-equivalent ones
-            metrics = {
-                # RAGAS-equivalent metrics
-                'answer_relevancy': 0,
-                'faithfulness': 0,
-                'context_recall': 0,
-                'context_precision': 0,
-                'context_relevancy': 0,
-                
-                # Performance metrics
-                'avg_response_length': 0,
-                'avg_retrieval_time': 0,
-                'avg_generation_time': 0,
-                'avg_total_time': 0,
-                'context_utilization': 0,
-                'response_completeness': 0,
-                'query_coverage': 0,
-                'semantic_similarity_to_context': 0,
-                'response_coherence': 0,
-                'context_relevance': 0
-            }
-            
+            metrics = self._initialize_metrics()
             total_responses = len(self.responses)
-            
+
             for response in self.responses:
-                # Basic metrics
-                metrics['avg_response_length'] += len(response['answer'])
-                metrics['avg_retrieval_time'] += response['retrieval_time']
-                metrics['avg_generation_time'] += response['generation_time']
-                metrics['avg_total_time'] += response['total_time']
-                
-                # Context utilization (how many docs were retrieved)
-                metrics['context_utilization'] += len(response['retrieved_contexts'])
-                
-                # Response completeness (basic heuristic)
-                if len(response['answer']) > 100 and '.' in response['answer']:
-                    metrics['response_completeness'] += 1
-                
-                # Query coverage (check if response addresses the query)
-                query_words = set(response['query'].lower().split())
-                answer_words = set(response['answer'].lower().split())
-                overlap = len(query_words.intersection(answer_words))
-                metrics['query_coverage'] += overlap / len(query_words) if query_words else 0
-                
-                # Calculate embeddings once for efficiency
-                query_embedding = embedding_model.encode([response['query']])
-                answer_embedding = embedding_model.encode([response['answer']])
-                
-                if response['retrieved_contexts']:
-                    contexts_text = " ".join([doc['content'] for doc in response['retrieved_contexts'][:3]])
-                    context_embedding = embedding_model.encode([contexts_text])
-                    
-                    # RAGAS-equivalent metrics using semantic similarity
-                    
-                    # 1. Answer Relevancy: How relevant is the answer to the question
-                    answer_query_similarity = cosine_similarity(answer_embedding, query_embedding)[0][0]
-                    metrics['answer_relevancy'] += answer_query_similarity
-                    
-                    # 2. Faithfulness: How well the answer is grounded in the context
-                    answer_context_similarity = cosine_similarity(answer_embedding, context_embedding)[0][0]
-                    metrics['faithfulness'] += answer_context_similarity
-                    
-                    # 3. Context Relevancy: How relevant is the retrieved context to the question
-                    context_query_similarity = cosine_similarity(context_embedding, query_embedding)[0][0]
-                    metrics['context_relevancy'] += context_query_similarity
-                    
-                    # 4. Context Precision: Quality of retrieved context (using similarity threshold)
-                    # Higher similarity means more precise context
-                    if context_query_similarity > 0.5:  # Threshold for relevant context
-                        metrics['context_precision'] += 1.0
-                    else:
-                        metrics['context_precision'] += context_query_similarity
-                    
-                    # 5. Context Recall: Coverage completeness (proxy using answer-context similarity)
-                    # Higher similarity suggests better context coverage
-                    metrics['context_recall'] += answer_context_similarity
-                    
-                    # Legacy metrics for backward compatibility
-                    metrics['semantic_similarity_to_context'] += answer_context_similarity
-                    metrics['context_relevance'] += context_query_similarity
-                
-                # Response coherence (simple heuristic based on sentence structure)
-                sentences = response['answer'].split('.')
-                if len(sentences) > 1 and all(len(s.strip()) > 10 for s in sentences[:3]):
-                    metrics['response_coherence'] += 1
-            
-            # Calculate averages
-            for key in metrics:
-                if key in ['response_completeness', 'response_coherence']:
-                    metrics[key] = metrics[key] / total_responses  # Proportion
-                elif key != 'avg_response_length':
-                    metrics[key] = metrics[key] / total_responses
-            
-            # Normalize scores to 0-1 scale where needed
-            metrics['response_completeness'] = min(metrics['response_completeness'], 1.0)
-            metrics['response_coherence'] = min(metrics['response_coherence'], 1.0)
-            metrics['context_precision'] = min(metrics['context_precision'], 1.0)
-            
-            logger.info("Local evaluation completed successfully")
-            logger.info("RAGAS-EQUIVALENT METRICS:")
-            logger.info(f"  • Answer Relevancy: {metrics['answer_relevancy']:.4f}")
-            logger.info(f"  • Faithfulness: {metrics['faithfulness']:.4f}")
-            logger.info(f"  • Context Recall: {metrics['context_recall']:.4f}")
-            logger.info(f"  • Context Precision: {metrics['context_precision']:.4f}")
-            logger.info(f"  • Context Relevancy: {metrics['context_relevancy']:.4f}")
-            logger.info("ADDITIONAL LOCAL METRICS:")
-            logger.info(f"  • Response Completeness: {metrics['response_completeness']:.4f}")
-            logger.info(f"  • Response Coherence: {metrics['response_coherence']:.4f}")
-            logger.info(f"  • Query Coverage: {metrics['query_coverage']:.4f}")
-            
+                self._update_basic_metrics(metrics, response)
+                self._update_query_coverage(metrics, response)
+                self._update_response_completeness(metrics, response)
+                self._update_context_metrics(metrics, response, embedding_model, cosine_similarity)
+                self._update_response_coherence(metrics, response)
+
+            self._average_and_normalize_metrics(metrics, total_responses)
+            self._log_metrics(metrics)
             return metrics
-            
+
         except Exception as e:
             logger.error(f"Error in alternative evaluation: {e}")
             return {}
+
+    def _initialize_metrics(self):
+        return {
+            'answer_relevancy': 0,
+            'faithfulness': 0,
+            'context_recall': 0,
+            'context_precision': 0,
+            'context_relevancy': 0,
+            'avg_response_length': 0,
+            'avg_retrieval_time': 0,
+            'avg_generation_time': 0,
+            'avg_total_time': 0,
+            'context_utilization': 0,
+            'response_completeness': 0,
+            'query_coverage': 0,
+            'semantic_similarity_to_context': 0,
+            'response_coherence': 0,
+            'context_relevance': 0
+        }
+
+    def _update_basic_metrics(self, metrics, response):
+        metrics['avg_response_length'] += len(response['answer'])
+        metrics['avg_retrieval_time'] += response['retrieval_time']
+        metrics['avg_generation_time'] += response['generation_time']
+        metrics['avg_total_time'] += response['total_time']
+        metrics['context_utilization'] += len(response['retrieved_contexts'])
+
+    def _update_query_coverage(self, metrics, response):
+        query_words = set(response['query'].lower().split())
+        answer_words = set(response['answer'].lower().split())
+        overlap = len(query_words.intersection(answer_words))
+        metrics['query_coverage'] += overlap / len(query_words) if query_words else 0
+
+    def _update_response_completeness(self, metrics, response):
+        if len(response['answer']) > 100 and '.' in response['answer']:
+            metrics['response_completeness'] += 1
+
+    def _update_context_metrics(self, metrics, response, embedding_model, cosine_similarity):
+        if response['retrieved_contexts']:
+            query_embedding = embedding_model.encode([response['query']])
+            answer_embedding = embedding_model.encode([response['answer']])
+            contexts_text = " ".join([doc['content'] for doc in response['retrieved_contexts'][:3]])
+            context_embedding = embedding_model.encode([contexts_text])
+
+            answer_query_similarity = cosine_similarity(answer_embedding, query_embedding)[0][0]
+            metrics['answer_relevancy'] += answer_query_similarity
+
+            answer_context_similarity = cosine_similarity(answer_embedding, context_embedding)[0][0]
+            metrics['faithfulness'] += answer_context_similarity
+
+            context_query_similarity = cosine_similarity(context_embedding, query_embedding)[0][0]
+            metrics['context_relevancy'] += context_query_similarity
+
+            if context_query_similarity > 0.5:
+                metrics['context_precision'] += 1.0
+            else:
+                metrics['context_precision'] += context_query_similarity
+
+            metrics['context_recall'] += answer_context_similarity
+            metrics['semantic_similarity_to_context'] += answer_context_similarity
+            metrics['context_relevance'] += context_query_similarity
+
+    def _update_response_coherence(self, metrics, response):
+        sentences = response['answer'].split('.')
+        if len(sentences) > 1 and all(len(s.strip()) > 10 for s in sentences[:3]):
+            metrics['response_coherence'] += 1
+
+    def _average_and_normalize_metrics(self, metrics, total_responses):
+        for key in metrics:
+            if key in ['response_completeness', 'response_coherence']:
+                metrics[key] = metrics[key] / total_responses
+            elif key != 'avg_response_length':
+                metrics[key] = metrics[key] / total_responses
+        metrics['response_completeness'] = min(metrics['response_completeness'], 1.0)
+        metrics['response_coherence'] = min(metrics['response_coherence'], 1.0)
+        metrics['context_precision'] = min(metrics['context_precision'], 1.0)
+
+    def _log_metrics(self, metrics):
+        logger.info("Local evaluation completed successfully")
+        logger.info("RAGAS-EQUIVALENT METRICS:")
+        logger.info(f"  • Answer Relevancy: {metrics['answer_relevancy']:.4f}")
+        logger.info(f"  • Faithfulness: {metrics['faithfulness']:.4f}")
+        logger.info(f"  • Context Recall: {metrics['context_recall']:.4f}")
+        logger.info(f"  • Context Precision: {metrics['context_precision']:.4f}")
+        logger.info(f"  • Context Relevancy: {metrics['context_relevancy']:.4f}")
+        logger.info("ADDITIONAL LOCAL METRICS:")
+        logger.info(f"  • Response Completeness: {metrics['response_completeness']:.4f}")
+        logger.info(f"  • Response Coherence: {metrics['response_coherence']:.4f}")
+        logger.info(f"  • Query Coverage: {metrics['query_coverage']:.4f}")
     
     def create_evaluation_report(self, results: Dict[str, Any]) -> str:
         """
@@ -567,8 +555,8 @@ class RAGASEvaluator:
             # No event loop running, nothing to clean up
             pass
         except Exception as e:
-            # Suppress cleanup errors to avoid confusing the user
-            pass
+             # Suppress cleanup errors to avoid confusing the user
+            logger.error(f"Error during cleanup: {e}")
 
 def main():
     """Main function to run RAGAS evaluation"""

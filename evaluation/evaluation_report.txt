@@ -1,7 +1,7 @@
 ================================================================================
 RAG PIPELINE EVALUATION REPORT
 ================================================================================
-Evaluation Date: 2025-09-12 17:40:27
+Evaluation Date: 2025-09-12 18:58:53
 Number of Queries Evaluated: 3
 
 EVALUATION METRICS:

@@ -46,7 +46,6 @@ def main():
             
             # Process query
             print("\n⏳ Processing...")
-            start_time = time.time()
             
             response = rag.query(query)
             
@@ -62,7 +61,7 @@ def main():
                 score = doc['score']
                 print(f"{i+1}. {source} (relevance: {1/(1+score):.3f})")
             
-            print(f"\n⚡ **Performance:**")
+            print("\n⚡ **Performance:**")
             print(f"   Retrieval: {response.retrieval_time:.3f}s")
             print(f"   Generation: {response.generation_time:.3f}s")
             print(f"   Total: {response.total_time:.3f}s")
