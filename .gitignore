@@ -1,6 +1,34 @@
-/__pycache__
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+
+# Virtual environments
 /venv/
-.env
 /.venv
-/models
-/src/__pycache__
+venv/
+.venv/
+
+# Environment files
+.env
+.env.local
+
+# Models (large files)
+/models/
+models/
+
+# Generated evaluation results
+/evaluation/
+evaluation/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
